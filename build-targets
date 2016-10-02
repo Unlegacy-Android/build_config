@@ -1,0 +1,4 @@
+# Unlegacy Android build target list
+# <device> <build_type> <branch> [period: "D"aily, "W"eekly or "M"onthly]
+# Absence of a period indicates Daily (the default)
+
