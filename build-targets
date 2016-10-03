@@ -2,3 +2,10 @@
 # <device> <build_type> <branch> [period: "D"aily, "W"eekly or "M"onthly]
 # Absence of a period indicates Daily (the default)
 
+# aosp-6.0
+grouper userdebug aosp-6.0 W
+tilapia userdebug aosp-6.0 W
+
+# aosp 7.0
+grouper userdebug aosp-7.0 D
+tilapia userdebug aosp-7.0 D
