@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da86d52c_c933f1f4",
+        "filename": "build-targets",
+        "patchSetId": 4
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2016-10-04T16:41:13Z",
+      "side": 1,
+      "message": "Won\u0027t build yet, I\u0027ll fix it later",
+      "revId": "5402192b682a968b0d21dbef6d191292bb796c96",
+      "serverId": "d5e41ece-075f-43fb-b5a6-48951f3d7b1d",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da86d52c_8939f9da",
+        "filename": "build-targets",
+        "patchSetId": 4
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2016-10-04T16:41:13Z",
+      "side": 1,
+      "message": "I don\u0027t think we\u0027re building hammerhead",
+      "revId": "5402192b682a968b0d21dbef6d191292bb796c96",
+      "serverId": "d5e41ece-075f-43fb-b5a6-48951f3d7b1d",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da86d52c_a936bde5",
+        "filename": "build-targets",
+        "patchSetId": 4
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 1000002
+      },
+      "writtenOn": "2016-10-04T16:41:13Z",
+      "side": 1,
+      "message": "Won\u0027t build yet, I\u0027ll fix it later",
+      "revId": "5402192b682a968b0d21dbef6d191292bb796c96",
+      "serverId": "d5e41ece-075f-43fb-b5a6-48951f3d7b1d",
+      "unresolved": false
+    }
+  ]
+}
