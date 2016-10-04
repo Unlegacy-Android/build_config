@@ -2,11 +2,42 @@
 # <device> <build_type> <branch> [period: "D"aily, "W"eekly or "M"onthly]
 # Absence of a period indicates Daily (the default)
 
+# aosp-4.4
+##OMAP
+espresso userdebug aosp-4.4 W
+espresso3g userdebug aosp-4.4 W
+tuna userdebug aosp-4.4 W
+
+# aosp-5.1
+##OMAP
+espresso userdebug aosp-5.1 W
+espresso3g userdebug aosp-5.1 W
+
 # aosp-6.0
+##OMAP
+espresso userdebug aosp-6.0 W
+espresso3g userdebug aosp-6.0 W
+hummingbird userdebug aosp-6.0 W
+ovation userdebug aosp-6.0 W
+tuna userdebug aosp-6.0 W
+## QCOM
+hammerhead userdebug aosp-6.0 W
+mako userdebug aosp-6.0 W
+## TEGRA 3
 grouper userdebug aosp-6.0 W
 tilapia userdebug aosp-6.0 W
 
 # aosp 7.0
+##OMAP
+espresso userdebug aosp-7.0 D
+espresso3g userdebug aosp-7.0 D
+hummingbird userdebug aosp-7.0 D
+ovation userdebug aosp-7.0 D
+tuna userdebug aosp-7.0 D
+## QCOM
+hammerhead userdebug aosp-7.0 D
+mako userdebug aosp-7.0 D
+## TEGRA 3
 grouper userdebug aosp-7.0 D
 tilapia userdebug aosp-7.0 D
 
