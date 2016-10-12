@@ -1,0 +1,8 @@
+{
+  "device": "a0001",
+  "display": "bacon-userdebug 6.0.1 M4B30X 3c13af1433 test-keys",
+  "description": "Testing OTA API",
+  "url": "http://get.cm/get/jenkins/182829/cm-13.0-20161010-NIGHTLY-bacon.zip",
+  "md5": "",
+  "date": "2016-10-10T00:00:00Z"
+}
