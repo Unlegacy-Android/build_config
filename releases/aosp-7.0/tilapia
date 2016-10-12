@@ -1,0 +1,9 @@
+{
+  "device": "tilapia",
+  "version": "7.1",
+  "date": 1477461895000,
+  "description": "Android 7.1",
+  "url": "http://pintux.lx.andrepinela.net/~apinela/out/target/product/tilapia/aosp_tilapia-ota-eng.apinela.zip",
+  "md5": "76cb6d442095a28cde50fbf01d2b8336",
+  "isIncremental": false
+}
