@@ -28,10 +28,10 @@ tilapia userdebug aosp-6.0 W
 
 # aosp 7.0
 ## OMAP4
-espresso userdebug aosp-7.0 D
-espresso3g userdebug aosp-7.0 D
-hummingbird userdebug aosp-7.0 D
-ovation userdebug aosp-7.0 D
+#espresso userdebug aosp-7.0 D
+#espresso3g userdebug aosp-7.0 D
+#hummingbird userdebug aosp-7.0 D
+#ovation userdebug aosp-7.0 D
 tuna userdebug aosp-7.0 D
 ## QCOM
 hammerhead userdebug aosp-7.0 D
