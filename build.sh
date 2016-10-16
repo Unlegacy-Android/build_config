@@ -25,6 +25,13 @@ then
   export CLEAN=false
 fi
 
+# Set CLEAN_TARGETS if not specified
+if [ -z "$CLEAN_TARGETS" ]
+then
+  echo CLEAN_TARGETS not specified, setting to clean
+  export CLEAN_TARGETS="clean"
+fi
+
 # Set build tag
 if [ -z "$BUILD_TAG" ]
 then
@@ -87,6 +94,7 @@ else
   echo "Last build branch is unknown, assume clean build"
   LAST_BRANCH=$BRANCH
   CLEAN="true"
+  CLEAN_TARGETS="clean"
 fi
 
 # If last branch is different from actual branch we force a cleanup
@@ -94,6 +102,7 @@ if [ "$LAST_BRANCH" != "$BRANCH" ]
 then
   echo "Branch has changed since the last build happened here. Forcing cleanup."
   CLEAN="true"
+  CLEAN_TARGETS="clean"
 fi
 
 # Load build environment
@@ -139,7 +148,7 @@ if [ $TIME_SINCE_LAST_CLEAN -gt "24" -o $CLEAN = "true" ]
 then
   echo "Cleaning!"
   touch .clean
-  make clean
+  make $CLEAN_TARGETS
 else
   echo "Skipping clean: $TIME_SINCE_LAST_CLEAN hours since last clean."
 fi
