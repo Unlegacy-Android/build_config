@@ -48,8 +48,17 @@ then
   export BUILD_TARGETS="otapackage"
 fi
 
+# Check for product
+if [ -z "$BUILD_PRODUCT" ]
+then
+  echo BUILD_UA_PRODUCT not specified, using aosp products as default...
+  export BUILD_PRODUCT_PREFIX=aosp
+else
+  export BUILD_PRODUCT_PREFIX=$BUILD_PRODUCT
+fi
+
 # Set LUNCH variable
-export LUNCH=$(set -- ${BRANCH};IFS='-';declare -a Array=\(\$*\);echo ${Array[0]}_${DEVICE}-${BUILD_TYPE})
+export LUNCH=${BUILD_PRODUCT_PREFIX}_${DEVICE}-${BUILD_TYPE}
 
 # Colorization fix in Jenkins and enable CCACHE
 export CL_RED="\"\033[31m\""
