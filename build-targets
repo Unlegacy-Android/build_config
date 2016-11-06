@@ -5,7 +5,7 @@
 # aosp-4.4
 ## OMAP4
 espresso userdebug aosp-4.4 M
-#espresso3g userdebug aosp-4.4 M
+espresso3g userdebug aosp-4.4 M
 tuna userdebug aosp-4.4 M
 
 # aosp-5.1
