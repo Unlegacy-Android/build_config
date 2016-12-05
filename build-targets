@@ -28,14 +28,14 @@ tilapia userdebug aosp-6.0 W
 
 # aosp 7.1
 ## OMAP4
-#espresso userdebug aosp-7.1 D
-#espresso3g userdebug aosp-7.1 D
+espresso userdebug aosp-7.1 D
+espresso3g userdebug aosp-7.1 D
 #hummingbird userdebug aosp-7.1 D
 #ovation userdebug aosp-7.1 D
 tuna userdebug aosp-7.1 D
 ## QCOM
 hammerhead userdebug aosp-7.1 D
-#mako userdebug aosp-7.1 D
+mako userdebug aosp-7.1 D
 ## TEGRA 3
 grouper userdebug aosp-7.1 D
 tilapia userdebug aosp-7.1 D
