@@ -36,8 +36,10 @@ tuna userdebug aosp-7.1 D
 ## QCOM
 hammerhead userdebug aosp-7.1 D
 mako userdebug aosp-7.1 D
-## TEGRA 3
+## TEGRA
 grouper userdebug aosp-7.1 D
 tilapia userdebug aosp-7.1 D
+flounder userdebug aosp-7.1 D
+flounder_lte userdebug aosp-7.1 D
 
 # DO NOT REMOVE
