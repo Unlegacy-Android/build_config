@@ -32,6 +32,13 @@ then
   export CLEAN_TARGETS="clean"
 fi
 
+# Set IGNORE_COMMIT_COUNT if not specified
+if [ -z "$IGNORE_COMMIT_COUNT" ]
+then
+  echo IGNORE_COMMIT_COUNT not specified, setting to true
+  export IGNORE_COMMIT_COUNT=true
+fi
+
 # Set build tag
 if [ -z "$BUILD_TAG" ]
 then
@@ -80,6 +87,27 @@ rm -rf archive/**
 
 # Move to cd source directory
 cd source
+
+# Count the total number of commits from all the source projects
+export COMMITS_PER_PROJECT=$(repo forall -c "git rev-list --count HEAD")
+export ACTUAL_COMMITS_COUNT=$(( ${COMMITS_PER_PROJECT//$'\n'/+} ))
+
+# Load last build commits count
+LAST_COMMITS_COUNT=0
+if [ -f .${DEVICE}_COMMIT_COUNT ]
+then
+  LAST_COMMITS_COUNT=$(cat .${DEVICE}_COMMIT_COUNT)
+fi
+
+# Check if changes were made
+if [ ! $LAST_COMMITS_COUNT -eq $ACTUAL_COMMITS_COUNT ]
+then
+  echo "Skipping build, no changes."
+  exit 1
+fi
+
+# Save the number of commits
+echo $ACTUAL_COMMITS_COUNT > .${DEVICE}_COMMIT_COUNT
 
 # Make sure ccache is in PATH
 export PATH="$PATH:/opt/local/bin/:$PWD/prebuilts/misc/$(uname|awk '{print tolower($0)}')-x86/ccache"
