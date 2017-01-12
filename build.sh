@@ -32,6 +32,13 @@ then
   export CLEAN_TARGETS="clean"
 fi
 
+# Set IGNORE_MADE_CHANGES if not specified
+if [ -z "$IGNORE_MADE_CHANGES" ]
+then
+  echo IGNORE_MADE_CHANGES not specified, setting to true
+  export IGNORE_MADE_CHANGES=true
+fi
+
 # Set build tag
 if [ -z "$BUILD_TAG" ]
 then
@@ -80,6 +87,27 @@ rm -rf archive/**
 
 # Move to cd source directory
 cd source
+
+# Count the total number of commits from all the source projects
+export ACTUAL_MADE_CHANGES_GLOBAL_SHA=$(sha256sum <(repo forall -c "git rev-parse HEAD") | cut -d ' ' -f 1)
+
+# Load last build commits count
+LAST_MADE_CHANGES_GLOBAL_SHA=""
+LAST_GLOBAL_SHA_FILENAME=".${DEVICE}_${BRANCH}_GLOBAL_SHA"
+if [ -f $LAST_GLOBAL_SHA_FILENAME ]
+then
+  LAST_MADE_CHANGES_GLOBAL_SHA=$(cat $LAST_GLOBAL_SHA_FILENAME)
+fi
+
+# Check if changes were made
+if [ $LAST_MADE_CHANGES_GLOBAL_SHA = $ACTUAL_MADE_CHANGES_GLOBAL_SHA ] && [ $IGNORE_MADE_CHANGES != true ]
+then
+  echo "Skipping build, no changes."
+  exit 1
+fi
+
+# Save the number of commits
+echo $ACTUAL_MADE_CHANGES_GLOBAL_SHA > $LAST_GLOBAL_SHA_FILENAME
 
 # Make sure ccache is in PATH
 export PATH="$PATH:/opt/local/bin/:$PWD/prebuilts/misc/$(uname|awk '{print tolower($0)}')-x86/ccache"
