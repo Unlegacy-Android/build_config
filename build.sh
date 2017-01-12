@@ -32,6 +32,13 @@ then
   export CLEAN_TARGETS="clean"
 fi
 
+# Set IGNORE_MADE_CHANGES if not specified
+if [ -z "$IGNORE_MADE_CHANGES" ]
+then
+  echo IGNORE_MADE_CHANGES not specified, setting to true
+  export IGNORE_MADE_CHANGES=true
+fi
+
 # Set build tag
 if [ -z "$BUILD_TAG" ]
 then
@@ -80,6 +87,24 @@ rm -rf archive/**
 
 # Move to cd source directory
 cd source
+
+# Get the actual sha256sum from all the project HEAD's sha1
+export ACTUAL_MADE_CHANGES_GLOBAL_SHA=$(sha256sum <(repo forall -c "git rev-parse HEAD") | cut -d ' ' -f 1)
+
+# Load last built sha256sum for this $DEVICE and $BRANCH (if exists)
+LAST_MADE_CHANGES_GLOBAL_SHA=""
+LAST_GLOBAL_SHA_FILENAME=".${DEVICE}_${BRANCH}_GLOBAL_SHA"
+if [ -f $LAST_GLOBAL_SHA_FILENAME ]
+then
+  LAST_MADE_CHANGES_GLOBAL_SHA=$(cat $LAST_GLOBAL_SHA_FILENAME)
+fi
+
+# Check if changes were made or if we have to ignore it
+if [ $LAST_MADE_CHANGES_GLOBAL_SHA = $ACTUAL_MADE_CHANGES_GLOBAL_SHA ] && [ $IGNORE_MADE_CHANGES != true ]
+then
+  echo "Skipping build, no changes."
+  exit 1
+fi
 
 # Make sure ccache is in PATH
 export PATH="$PATH:/opt/local/bin/:$PWD/prebuilts/misc/$(uname|awk '{print tolower($0)}')-x86/ccache"
@@ -207,3 +232,6 @@ fi
 
 # chmod the files in case UMASK blocks permissions
 chmod -R ugo+r $WORKSPACE/archive
+
+# Save the actual sha256sum to be used in the next build
+echo $ACTUAL_MADE_CHANGES_GLOBAL_SHA > $LAST_GLOBAL_SHA_FILENAME
