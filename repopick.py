@@ -33,9 +33,10 @@ for change in sys.argv[1:]:
         # Get the projects name already in lower case
         change_project_name = project.lower().split('/')[1]
         repo_project_name =  ppaths[1].lower().split('/')[1]
-        if repo_project_name == change_project_name:
-            project = ppaths[0]
-            break
+        if "/" in ppaths:
+                if repo_project_name == change_project_name:
+                        project = ppaths[0]
+                        break
         if(retcode is not None):
             break
 
