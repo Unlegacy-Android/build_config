@@ -32,8 +32,8 @@ for change in sys.argv[1:]:
         ppaths = re.split('\s*:\s*', pline.decode())
         # Get the projects name already in lower case
         change_project_name = project.lower().split('/')[1]
-        repo_project_name =  ppaths[1].lower().split('/')[1]
         if "/" in ppaths:
+                repo_project_name =  ppaths[1].lower().split('/')[1]
                 if repo_project_name == change_project_name:
                         project = ppaths[0]
                         break
