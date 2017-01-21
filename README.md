@@ -1,5 +1,5 @@
 # Accessing the Build Server
-http://jenkins.unlegacy-android.cf/
+http://jenkins.unlegacy-android.org/
 
 # Authenticating to the Build Server
 You must be a member of the Unlegacy-Android organization,

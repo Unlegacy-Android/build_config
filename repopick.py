@@ -18,7 +18,7 @@ except ImportError:
 
 for change in sys.argv[1:]:
     print("Change applied: %s" % change)
-    f = urllib.request.urlopen('http://gerrit.unlegacy-android.cf/changes/?q=change:%s' % change)
+    f = urllib.request.urlopen('http://gerrit.unlegacy-android.org/changes/?q=change:%s' % change)
     d = f.read().decode(encoding='UTF-8')
     # gerrit doesnt actually return json. returns two json blobs, separate lines. bizarre.
     d = d.split('\'')[1]
@@ -42,7 +42,7 @@ for change in sys.argv[1:]:
     print("Project path: %s" % project)
     number = data[0]['_number']
 
-    f = urllib.request.urlopen("http://gerrit.unlegacy-android.cf/changes/%s/revisions/current/review" % number)
+    f = urllib.request.urlopen("http://gerrit.unlegacy-android.org/changes/%s/revisions/current/review" % number)
     d = f.read().decode(encoding='UTF-8')
     d = '\n'.join(d.split('\n')[1:])
     data = json.loads(d)
@@ -63,5 +63,5 @@ for change in sys.argv[1:]:
         sys.stderr.write('no project directory: %s' % project)
         sys.exit(1)
 
-    os.system('cd %s ; git fetch http://gerrit.unlegacy-android.cf/%s %s' % (project, data['project'], ref))
+    os.system('cd %s ; git fetch http://gerrit.unlegacy-android.org/%s %s' % (project, data['project'], ref))
     os.system('cd %s ; git merge FETCH_HEAD' % project)
