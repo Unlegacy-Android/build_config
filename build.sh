@@ -37,8 +37,11 @@ if [ -z "$BUILD_TAG" ]
 then
   echo BUILD_TAG not specified, using the default one...
   export BUILD_NUMBER=$(date +%Y%m%d)
-else
+else if [ -z "$PLATFORM_VERSIONG" ]
+  echo PLATFORM_VERSION not specified, ignoring...
   export BUILD_NUMBER=$BUILD_TAG
+else
+  export BUILD_NUMBER=$BUILD_TAG-$PLATFORM_VERSION
 fi
 
 # Set build targets
