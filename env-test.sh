@@ -3,13 +3,9 @@
 # . env-test.sh
 # bash -xe build.sh
 
-export WORKSPACE=$(cd ..; pwd)
 export BRANCH="aosp-7.1"
-export BUILD_TYPE="eng"
-export BUILD_PRODUCT="aosp"
-export DEVICE="arm"
-export BUILD_TARGETS=""
+export BUILD_TYPE="userdebug"
+export BUILD_PRODUCT="ua"
+export DEVICE="tuna"
 export CLEAN=false
-export CLEAN_TARGETS="installclean"
 export GERRIT_CHANGES=""
-export EXTRA_DEBUGGABLE_BOOT=false
