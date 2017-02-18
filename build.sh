@@ -9,11 +9,8 @@ function check_result {
   fi
 }
 
-if [ -z "$WORKSPACE" ]
-then
-  echo WORKSPACE not specified
-  exit 1
-fi
+# Define workspace path
+export WORKSPACE=/unlegacy
 
 # Set build jobs
 export JOBS=$(expr 0 + $(grep -c ^processor /proc/cpuinfo))
@@ -22,37 +19,7 @@ export JOBS=$(expr 0 + $(grep -c ^processor /proc/cpuinfo))
 if [ -z "$CLEAN" ]
 then
   echo CLEAN not specified, setting to false
-  export CLEAN=false
-fi
-
-# Set CLEAN_TARGETS if not specified
-if [ -z "$CLEAN_TARGETS" ]
-then
-  echo CLEAN_TARGETS not specified, setting to clean
-  export CLEAN_TARGETS="clean"
-fi
-
-# Set IGNORE_MADE_CHANGES if not specified
-if [ -z "$IGNORE_MADE_CHANGES" ]
-then
-  echo IGNORE_MADE_CHANGES not specified, setting to true
-  export IGNORE_MADE_CHANGES=true
-fi
-
-# Set build tag
-if [ -z "$BUILD_TAG" ]
-then
-  echo BUILD_TAG not specified, using the default one...
-  export BUILD_NUMBER=$(date +%Y%m%d)
-else
-  export BUILD_NUMBER=$BUILD_TAG
-fi
-
-# Set build targets
-if [ -z "$BUILD_TARGETS" ]
-then
-  echo BUILD_TARGETS not specified, using otapackage as default...
-  export BUILD_TARGETS="otapackage"
+  export CLEAN=true
 fi
 
 # Check for product
@@ -86,29 +53,11 @@ mkdir -p archive
 rm -rf archive/**
 
 # Move to cd source directory
-cd source
-
-# Get the actual sha256sum from all the project HEAD's sha1
-export ACTUAL_MADE_CHANGES_GLOBAL_SHA=$(sha256sum <(repo forall -c "git rev-parse HEAD") | cut -d ' ' -f 1)
-
-# Load last built sha256sum for this $DEVICE and $BRANCH (if exists)
-LAST_MADE_CHANGES_GLOBAL_SHA=""
-LAST_GLOBAL_SHA_FILENAME=".${DEVICE}_${BRANCH}_global_sha256sum"
-if [ -f $LAST_GLOBAL_SHA_FILENAME ]
-then
-  LAST_MADE_CHANGES_GLOBAL_SHA=$(cat $LAST_GLOBAL_SHA_FILENAME)
-fi
-
-# Check if changes were made or if we have to ignore it
-if [ $LAST_MADE_CHANGES_GLOBAL_SHA = $ACTUAL_MADE_CHANGES_GLOBAL_SHA ] && [ $IGNORE_MADE_CHANGES != true ]
-then
-  echo "Skipping build, no changes."
-  exit 1
-fi
+cd $WORKSPACE/$BRANCH
 
 # Make sure ccache is in PATH
 export PATH="$PATH:/opt/local/bin/:$PWD/prebuilts/misc/$(uname|awk '{print tolower($0)}')-x86/ccache"
-export CCACHE_DIR=~/.ccache
+export CCACHE_DIR=$WORKSPACE/.ccache
 
 # Run the bootstrap script if exists
 if [ -f $WORKSPACE/build_config/bootstrap.sh ]
@@ -119,25 +68,6 @@ fi
 # Show the core manifest
 echo Core Manifest:
 cat .repo/manifest.xml
-
-# Check last branch
-if [ -f .last_branch ]
-then
-  LAST_BRANCH=$(cat .last_branch)
-else
-  echo "Last build branch is unknown, assume clean build"
-  LAST_BRANCH=$BRANCH
-  CLEAN="true"
-  CLEAN_TARGETS="clean"
-fi
-
-# If last branch is different from actual branch we force a cleanup
-if [ "$LAST_BRANCH" != "$BRANCH" ]
-then
-  echo "Branch has changed since the last build happened here. Forcing cleanup."
-  CLEAN="true"
-  CLEAN_TARGETS="clean"
-fi
 
 # Load build environment
 . build/envsetup.sh
@@ -159,7 +89,7 @@ then
     check_result "Gerrit picks failed."
   else
     python $WORKSPACE/hudson/repopick.py $(curl $GERRIT_CHANGES)
-    check_result "gerrit picks failed."
+    check_result "Gerrit picks failed."
   fi
 fi
 
@@ -182,13 +112,10 @@ if [ $TIME_SINCE_LAST_CLEAN -gt "24" -o $CLEAN = "true" ]
 then
   echo "Cleaning!"
   touch .clean
-  make $CLEAN_TARGETS
+  make clean
 else
   echo "Skipping clean: $TIME_SINCE_LAST_CLEAN hours since last clean."
 fi
-
-# Save last branch
-echo "$BRANCH" > .last_branch
 
 # Build
 time make -j$JOBS $BUILD_TARGETS
