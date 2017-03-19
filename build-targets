@@ -7,6 +7,8 @@
 espresso userdebug aosp-4.4 M
 espresso3g userdebug aosp-4.4 M
 tuna userdebug aosp-4.4 M
+## TEGRA 3
+picasso2 userdebug aosp-4.4 M
 
 # aosp-5.1
 ## OMAP4
@@ -24,6 +26,7 @@ tuna userdebug aosp-6.0 W
 mako userdebug aosp-6.0 W
 ## TEGRA 3
 grouper userdebug aosp-6.0 W
+picasso2 userdebug aosp-6.0 W
 tilapia userdebug aosp-6.0 W
 
 # aosp 7.1
