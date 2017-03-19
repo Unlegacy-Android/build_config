@@ -37,6 +37,7 @@ espresso3g userdebug aosp-7.1 D
 #ovation userdebug aosp-7.1 D
 tuna userdebug aosp-7.1 D
 ## QCOM
+flo userdebug aosp-7.1 D
 hammerhead userdebug aosp-7.1 D
 mako userdebug aosp-7.1 D
 ## TEGRA
