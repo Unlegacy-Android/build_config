@@ -157,6 +157,7 @@ then
     export FILE_NAME=${OUTPUT_FILE_NAME}-${LAST_DATE}-TO-${LATEST_DATE}
     ./build/tools/releasetools/ota_from_target_files \
                   $OTA_OPTIONS \
+                  --override_device=$(override_device) \
                   --log_diff $WORKSPACE/archive/$FILE_NAME.log \
                   --incremental_from $INCOMING_DEVICE_DIR/last.zip \
                   $INCOMING_DEVICE_DIR/latest.zip $WORKSPACE/archive/$FILE_NAME.zip
@@ -167,6 +168,7 @@ then
       ./build/tools/releasetools/ota_from_target_files \
                     $OTA_OPTIONS \
                     --block \
+                    --override_device=$(override_device) \
                     $INCOMING_DEVICE_DIR/latest.zip $WORKSPACE/archive/$FILE_NAME.zip
       check_result "OTA Package failed."
     else
@@ -177,6 +179,7 @@ then
     ./build/tools/releasetools/ota_from_target_files \
                   $OTA_OPTIONS \
                   --block \
+                  --override_device=$(override_device) \
                   $INCOMING_DEVICE_DIR/latest.zip $WORKSPACE/archive/$FILE_NAME.zip
     check_result "OTA Package failed."
   fi
