@@ -1,5 +1,6 @@
 node('builder') {
-    stage('Preparation') {
+    currentBuild.description = env.env.BUILD_PRODUCT+'_'+env.DEVICE+'-'+env.BRANCH
+    stage('Preparation') {0
         //echo 'Checking JDK...'
         if (env.BRANCH == 'aosp-4.4') {
             echo 'Branch=aosp-4.4 -> Setting openjdk-7'
@@ -36,6 +37,6 @@ node('builder') {
         archiveArtifacts allowEmptyArchive: true, artifacts: '/unlegacy/archive/**', fingerprint: true, onlyIfSuccessful: true
     }
     stage('Publishing') {
-        sh returnStdout: false, script: 'scp -r /unlegacy/archive/** builds@mirror:/$BRANCH/$DEVICE/.'
+        sh returnStdout: false, script: 'scp -r /unlegacy/archive/** builds@mirror:./$BRANCH/$DEVICE/.'
     }
 }
