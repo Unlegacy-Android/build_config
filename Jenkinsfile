@@ -35,7 +35,7 @@ node('packager') {
         }
     }
     stage('Archiving') {
-        archiveArtifacts allowEmptyArchive: true, artifacts: 'archive/**', fingerprint: true, onlyIfSuccessful: true
+        archiveArtifacts allowEmptyArchive: true, artifacts: '/unlegacy/**', fingerprint: true, onlyIfSuccessful: true
     }
     stage('Publishing') {
         // TODO
