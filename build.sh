@@ -76,7 +76,6 @@ if [ "$1" == "build" ]
 then
   # Cleanup zip's from OUT directory
   rm -f $OUT/*.zip*
-  rm -rf $OUT/../../../dist/*target_files*.zip
 
   # Load gerrit changes
   if [ ! -z "$GERRIT_CHANGES" ]
@@ -150,10 +149,10 @@ then
   export OTA_OPTIONS="-t $JOBS -v -p $ANDROID_HOST_OUT"
   export PLATFORM_VERSION=`grep ro.build.version.release ${INCOMING_DEVICE_DIR}/latest.prop | cut -d '=' -f2`
   export OUTPUT_FILE_NAME="ua_${DEVICE}-${PLATFORM_VERSION}"
-  export LATEST_DATE=`grep ro.build.version.incremental ${INCOMING_DEVICE_DIR}/latest.prop | cut -d '=' -f2 | cut -d '.' -f3`
+  export LATEST_DATE=$(date -r ${INCOMING_DEVICE_DIR}/latest.prop +%Y%m%d%H%M%S)
   if [ -f ${INCOMING_DEVICE_DIR}/last.zip ]
   then
-    export LAST_DATE=`grep ro.build.version.incremental ${INCOMING_DEVICE_DIR}/last.prop | cut -d '=' -f2 | cut -d '.' -f3`
+    export LAST_DATE=$(date -r ${INCOMING_DEVICE_DIR}/last.prop +%Y%m%d%H%M%S)
     export FILE_NAME=${OUTPUT_FILE_NAME}-${LAST_DATE}-TO-${LATEST_DATE}
     ./build/tools/releasetools/ota_from_target_files \
                   $OTA_OPTIONS \
@@ -180,4 +179,8 @@ then
                   $INCOMING_DEVICE_DIR/latest.zip $WORKSPACE/archive/$FILE_NAME.zip
     check_result "OTA Package failed."
   fi
+  for f in $(ls $WORKSPACE/archive/*.zip*)
+  do
+    md5sum $f | cut -d ' ' -f1 > $WORKSPACE/archive/$(basename $f).md5sum
+  done
 fi
