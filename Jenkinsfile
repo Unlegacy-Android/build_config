@@ -36,7 +36,9 @@ node('builder') {
     stage('Archiving') {
         archiveArtifacts allowEmptyArchive: true, artifacts: '/unlegacy/archive/**', fingerprint: true, onlyIfSuccessful: true
     }
-    stage('Publishing') {
-        sh returnStdout: false, script: 'scp -r /unlegacy/archive/** builds@mirror:./$BRANCH/$DEVICE/.'
+    if (env.PUBLISH_BUILD == 'true') {
+      stage('Publishing') {
+          sh returnStdout: false, script: 'scp -r /unlegacy/archive/** builds@mirror:./$BRANCH/$DEVICE/.'
+      }
     }
 }
