@@ -19,7 +19,7 @@ export JOBS=$(expr 0 + $(grep -c ^processor /proc/cpuinfo))
 if [ -z "$CLEAN" ]
 then
   echo CLEAN not specified, setting to false
-  export CLEAN=true
+  export CLEAN=false
 fi
 
 # Check for product
@@ -143,6 +143,8 @@ then
         cp $f $WORKSPACE/archive/$(basename $f)
     done
   fi
+  # Cleanup product directory and leave just the shared objects
+  rm -rf $(cd $OUT/../;pwd)
 elif  [ "$1" == "otapackage" ]
 then
   export INCOMING_DEVICE_DIR=/incoming/${BRANCH}/${DEVICE}
