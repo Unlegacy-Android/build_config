@@ -27,9 +27,6 @@ node('builder') {
     }
     stage('OTA Package') {
         dir('/unlegacy/build_config') {
-            checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: 'master']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'WipeWorkspace']], submoduleCfg: [], userRemoteConfigs: [[url: 'git://github.com/Unlegacy-Android/build_config.git']]]
-        }
-        dir('/unlegacy/build_config') {
             sh returnStdout: false, script: 'bash build.sh otapackage'
         }
     }
