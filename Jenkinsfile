@@ -34,7 +34,9 @@ node('builder') {
         }
     }
     stage('Archiving') {
-        archiveArtifacts allowEmptyArchive: true, artifacts: '/unlegacy/archive/**', fingerprint: true, onlyIfSuccessful: true
+        dir('/unlegacy/archive') {
+            archiveArtifacts allowEmptyArchive: true, artifacts: '**', fingerprint: true, onlyIfSuccessful: true
+        }
     }
     if (env.PUBLISH_BUILD == 'true') {
       stage('Publishing') {
