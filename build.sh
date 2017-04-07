@@ -11,6 +11,8 @@ function check_result {
 
 # Define workspace path
 export WORKSPACE=/unlegacy
+export INCOMING_DIR=/incoming/${BRANCH}
+export DEVICE_TARGET_FILES_DIR=${INCOMING_DIR}/${DEVICE}
 
 # Set build jobs
 export JOBS=$(expr 0 + $(grep -c ^processor /proc/cpuinfo))
@@ -54,6 +56,12 @@ rm -rf archive/**
 
 # Move to cd source directory
 cd $WORKSPACE/$BRANCH
+
+# Check last manifest
+if [ -f ${DEVICE_TARGET_FILES_DIR}/last.mf ]
+then
+  //TODO: diff manifests
+fi
 
 # Make sure ccache is in PATH
 export PATH="$PATH:/opt/local/bin/:$PWD/prebuilts/misc/$(uname|awk '{print tolower($0)}')-x86/ccache"
@@ -122,18 +130,19 @@ then
     time make -j$JOBS target-files-package
     check_result "Build failed."
     # Send target_files to be processed by otatools
-    export INCOMING_DIR=/incoming/${BRANCH}
-    export DEVICE_TARGET_FILES_DIR=${INCOMING_DIR}/${DEVICE}
     export DEVICE_TARGET_FILES_PATH=${DEVICE_TARGET_FILES_DIR}/$(date -u +%Y%m%d%H%M%S).zip
     mkdir -p $DEVICE_TARGET_FILES_DIR
     cp ${OUT}/obj/PACKAGING/target_files_intermediates/*target_files*.zip $DEVICE_TARGET_FILES_PATH
     rm -f $(readlink ${DEVICE_TARGET_FILES_DIR}/last.zip)
     rm -f ${DEVICE_TARGET_FILES_DIR}/last.zip
     rm -f ${DEVICE_TARGET_FILES_DIR}/last.prop
+    rm -f ${DEVICE_TARGET_FILES_DIR}/last.mf
     mv ${DEVICE_TARGET_FILES_DIR}/latest.zip ${DEVICE_TARGET_FILES_DIR}/last.zip
     mv ${DEVICE_TARGET_FILES_DIR}/latest.prop ${DEVICE_TARGET_FILES_DIR}/last.prop
+    mv ${DEVICE_TARGET_FILES_DIR}/latest.mf ${DEVICE_TARGET_FILES_DIR}/last.mf
     ln -sf $DEVICE_TARGET_FILES_PATH ${DEVICE_TARGET_FILES_DIR}/latest.zip
     cp -f $OUT/system/build.prop ${DEVICE_TARGET_FILES_DIR}/latest.prop
+    repo manifest -r -o ${DEVICE_TARGET_FILES_DIR}/latest.mf
   else
     time make -j$JOBS otapackage
     check_result "Build failed."
