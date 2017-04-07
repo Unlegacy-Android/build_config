@@ -1,3 +1,23 @@
+int build(String command) {
+    echo 'Setting up environment...'
+    env.WORKSPACE = '/unlegacy'
+    env.ARCHIVE_DIR = '/unlegacy/archive'
+    env.INCOMING_DIR='/incoming/'+ env.BRANCH
+    env.DEVICE_TARGET_FILES_DIR = env.INCOMING_DIR + '/' + env.DEVICE
+    env.LUNCH = env.BUILD_PRODUCT + '_' + env.DEVICE + '-' + env.BUILD_TYPE
+    env.USE_CCACHE = 1
+    env.CCACHE_NLEVELS = 4
+    env.PYTHONDONTWRITEBYTECODE = 1
+
+    // Number of available cores to build
+    env.JOBS = sh returnStDout: true, '''expr 0 + $(grep -c ^processor /proc/cpuinfo)'''
+    echo 'Number of available cores: ' + env.JOBS
+
+    echo 'Preparing archive directory...'
+    sh 'mkdir -p $ARCHIVE_DIR'
+    sh 'rm -rf $ARCHIVE_DIR/**'
+}
+
 node('builder') {
     try {
         currentBuild.description = env.BUILD_PRODUCT+'_'+env.DEVICE+'-'+env.BRANCH
@@ -19,36 +39,34 @@ node('builder') {
             dir('/unlegacy/build_config') {
                 checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: 'master']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'WipeWorkspace']], submoduleCfg: [], userRemoteConfigs: [[url: 'git://github.com/Unlegacy-Android/build_config.git']]]
             }
-            checkout poll: false, scm: [$class: 'RepoScm', currentBranch: true, destinationDir: '/unlegacy/'+env.BRANCH, forceSync: true, jobs: 8, depth: 1, manifestBranch: '${BRANCH}', manifestRepositoryUrl: 'https://github.com/Unlegacy-Android/android.git', noTags: true, quiet: true]
+            //checkout poll: false, scm: [$class: 'RepoScm', currentBranch: true, destinationDir: '/unlegacy/'+env.BRANCH, forceSync: true, jobs: 8, depth: 1, manifestBranch: '${BRANCH}', manifestRepositoryUrl: 'https://github.com/Unlegacy-Android/android.git', noTags: true, quiet: true]
         }
-        stage('Build process') {
-            dir('/unlegacy/build_config') {
-                sh returnStdout: false, script: 'bash build.sh build'
+        dir('/unlegacy/build_config') {
+            stage('Build process') {
+                build('build')
             }
-        }
-        stage('OTA Package') {
-            if (env.PUBLISH_BUILD == 'true') {
-                dir('/unlegacy/build_config') {
-                    sh returnStdout: false, script: 'bash build.sh otapackage'
+            stage('OTA Package') {
+                if (env.PUBLISH_BUILD == 'true') {
+                    build('otapackage')
+                } else {
+                    echo "Will not run OTA Package because PUBLISH_BUILD=false"
                 }
-            } else {
-                echo "Will not run OTA Package because PUBLISH_BUILD=false"
             }
         }
         stage('Archiving') {
             dir('/unlegacy/archive') {
-                archiveArtifacts allowEmptyArchive: true, artifacts: '**', excludes: '*-ota-*', fingerprint: true, onlyIfSuccessful: true
+                //archiveArtifacts allowEmptyArchive: true, artifacts: '**', excludes: '*-ota-*', fingerprint: true, onlyIfSuccessful: true
             }
         }
         stage('Publishing') {
             if (env.PUBLISH_BUILD == 'true') {
-                sh returnStdout: false, script: 'scp -r /unlegacy/archive/** builds@mirror:./$BRANCH/$DEVICE/.'
+                //sh returnStdout: false, script: 'scp -r /unlegacy/archive/** builds@mirror:./$BRANCH/$DEVICE/.'
             } else {
                 echo "Will not publish anything because PUBLISH_BUILD=false"
             }
         }
-        slackSend (color: 'good', message: "Jenkins Builder - Job SUCCESS: '${env.JOB_NAME} [${env.BUILD_NUMBER} - ${currentBuild.description}]' (${env.BUILD_URL})")
+        //slackSend (color: 'good', message: "Jenkins Builder - Job SUCCESS: '${env.JOB_NAME} [${env.BUILD_NUMBER} - ${currentBuild.description}]' (${env.BUILD_URL})")
     } catch (Exception e) {
-        slackSend (color: 'danger', message: "Jenkins Builder - Job FAILED: '${env.JOB_NAME} [${env.BUILD_NUMBER} - ${currentBuild.description}]' (${env.BUILD_URL})")
+        //slackSend (color: 'danger', message: "Jenkins Builder - Job FAILED: '${env.JOB_NAME} [${env.BUILD_NUMBER} - ${currentBuild.description}]' (${env.BUILD_URL})")
     }
 }
