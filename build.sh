@@ -158,7 +158,6 @@ then
     export FILE_NAME=${OUTPUT_FILE_NAME}-${LAST_DATE}-TO-${LATEST_DATE}
     ./build/tools/releasetools/ota_from_target_files \
                   $OTA_OPTIONS \
-                  --log_diff $WORKSPACE/archive/$FILE_NAME.log \
                   --incremental_from $INCOMING_DEVICE_DIR/last.zip \
                   $INCOMING_DEVICE_DIR/latest.zip $WORKSPACE/archive/$FILE_NAME.zip
     check_result "Delta OTA Package failed."
