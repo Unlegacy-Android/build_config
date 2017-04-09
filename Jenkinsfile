@@ -112,14 +112,14 @@ int createOtaPackage(String otaType) {
       cp -f $OUT/system/build.prop ${DEVICE_TARGET_FILES_DIR}/latest.prop
 
       export PLATFORM_VERSION=`grep ro.build.version.release $DEVICE_TARGET_FILES_DIR/latest.prop | cut -d '=' -f2`
-      export OUTPUT_FILE_NAME=$BUILD_PRODUCT_$DEVICE-$PLATFORM_VERSION
+      export OUTPUT_FILE_NAME=${BUILD_PRODUCT}_${DEVICE}-${PLATFORM_VERSION}
       export LATEST_DATE=$(date -r $DEVICE_TARGET_FILES_DIR/latest.prop +%Y%m%d%H%M%S)
-      export OTA_OPTIONS="-v -p $ANDROID_HOST_OUT $OTA_PREDF_OPTIONS"
+      export OTA_OPTIONS="-v -p $ANDROID_HOST_OUT $OTA_OPTIONS"
 
       if [ -f ${DEVICE_TARGET_FILES_DIR}/last.zip ] && [ "${OTA_TYPE}" == "incremental" ]
       then
         export LAST_DATE=$(date -r $DEVICE_TARGET_FILES_DIR/last.prop +%Y%m%d%H%M%S)
-        export FILE_NAME=$OUTPUT_FILE_NAME-$LAST_DATE-TO-$LATEST_DATE
+        export FILE_NAME=${OUTPUT_FILE_NAME}-${LAST_DATE}-TO-${LATEST_DATE}
         ./build/tools/releasetools/ota_from_target_files \
           $OTA_OPTIONS \
           --incremental_from $DEVICE_TARGET_FILES_DIR/last.zip \
@@ -208,12 +208,12 @@ node('builder') {
         stage('Build process') {
             ret = build('target-files-package')
             if ( ret != 0 )
-                trow 'Build failed!'
+                error('Build failed!')
         }
         stage('OTA Package') {
             ret = createOtaPackage(((env.PUBLISH_BUILD == 'true') ? 'incremental' : 'full'))
             if ( ret != 0 )
-                trow 'Failed to create OTA Package!'
+                error('Failed to create OTA Package!')
         }
         stage('Archiving') {
             dir(env.ARCHIVE_DIR) {
