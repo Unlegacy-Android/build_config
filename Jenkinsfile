@@ -6,6 +6,22 @@ void resetSourceTree() {
   }
 }
 
+int cleanUp() {
+  echo 'Cleaning up environment...'
+  dir(env.SOURCE_DIR) {
+    ansiColor('xterm') {
+      return sh (returnStatus: true, script: '''#!/usr/bin/env bash
+      # Load build environment
+      . build/envsetup.sh
+      lunch $LUNCH
+      # Clean up PRODUCT directory keeping the common stuff
+      mkdir -p $OUT
+      rm -rf $(cd $OUT/../;pwd)
+      ''')
+    }
+  }
+}
+
 void repoPickGerritChanges() {
   echo 'Applying gerrit changes...'
   dir(env.SOURCE_DIR) {
@@ -63,7 +79,7 @@ int build(String buildTargets) {
         touch .clean
         make clean
       else
-        echo -e "Skipping full clean: $TIME_SINCE_LAST_CLEAN hours since last clean.\nJust doing installclean."
+        echo -e "Skipping full clean: $TIME_SINCE_LAST_CLEAN hours since last clean.\nCleaning PRODUCT directory..."
         mkdir -p $OUT
         rm -rf $(cd $OUT/../;pwd)
       fi
@@ -127,18 +143,12 @@ int createOtaPackage(String otaType) {
       do
         md5sum $f | cut -d ' ' -f1 > $ARCHIVE_DIR/$(basename $f).md5sum
       done
+
+      # Clean up PRODUCT directory keeping the common stuff
+      mkdir -p $OUT
+      rm -rf $(cd $OUT/../;pwd)
       ''')
     }
-  }
-}
-
-void cleanup() {
-  echo 'Creating OTA Package...'
-  env.OTA_TYPE = otaType
-  dir(env.SOURCE_DIR) {
-    return sh (returnStatus: true, script: '''#!/usr/bin/env bash
-    rm -rf $INCOMING_TMP_DIR
-    ''')
   }
 }
 
@@ -219,12 +229,13 @@ node('builder') {
                   echo 'Will not publish anything because PUBLISH_BUILD=false'
             }
         }
-        slackSend (color: 'good', message: "Jenkins Builder - Job SUCCESS: '${env.JOB_NAME} [${env.BUILD_NUMBER} - ${currentBuild.description}]' (${env.BUILD_URL})")
+        cleanUp()
         currentBuild.result = 'SUCCESS'
+        slackSend (color: 'good', message: "Jenkins Builder - Job SUCCESS: '${env.JOB_NAME} [${env.BUILD_NUMBER} - ${currentBuild.description}]' (${env.BUILD_URL})")
     } catch (Exception e) {
-        slackSend (color: 'danger', message: "Jenkins Builder - Job FAILED: '${env.JOB_NAME} [${env.BUILD_NUMBER} - ${currentBuild.description}]' (${env.BUILD_URL})")
+        try { cleanUp() } catch (Exception ex) { }
         currentBuild.result = 'FAILURE'
-        resetSourceTree()
+        slackSend (color: 'danger', message: "Jenkins Builder - Job FAILED: '${env.JOB_NAME} [${env.BUILD_NUMBER} - ${currentBuild.description}]' (${env.BUILD_URL})")
     }
     echo "RESULT: ${currentBuild.result}"
 }
