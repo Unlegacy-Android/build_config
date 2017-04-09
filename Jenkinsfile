@@ -63,7 +63,7 @@ int build(String buildTargets) {
         touch .clean
         make clean
       else
-        echo -e "Skipping full clean: $TIME_SINCE_LAST_CLEAN hours since last clean.\nJust doing installclean."
+        echo -e "Skipping full clean: $TIME_SINCE_LAST_CLEAN hours since last clean.\nCleaning PRODUCT directory..."
         mkdir -p $OUT
         rm -rf $(cd $OUT/../;pwd)
       fi
@@ -127,18 +127,12 @@ int createOtaPackage(String otaType) {
       do
         md5sum $f | cut -d ' ' -f1 > $ARCHIVE_DIR/$(basename $f).md5sum
       done
+
+      # Clean up PRODUCT directory keeping the common stuff
+      mkdir -p $OUT
+      rm -rf $(cd $OUT/../;pwd)
       ''')
     }
-  }
-}
-
-void cleanup() {
-  echo 'Creating OTA Package...'
-  env.OTA_TYPE = otaType
-  dir(env.SOURCE_DIR) {
-    return sh (returnStatus: true, script: '''#!/usr/bin/env bash
-    rm -rf $INCOMING_TMP_DIR
-    ''')
   }
 }
 
