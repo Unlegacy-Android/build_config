@@ -114,30 +114,34 @@ int createOtaPackage(String otaType) {
       export PLATFORM_VERSION=`grep ro.build.version.release $DEVICE_TARGET_FILES_DIR/latest.prop | cut -d '=' -f2`
       export OUTPUT_FILE_NAME=${BUILD_PRODUCT}_${DEVICE}-${PLATFORM_VERSION}
       export LATEST_DATE=$(date -r $DEVICE_TARGET_FILES_DIR/latest.prop +%Y%m%d%H%M%S)
-      export OTA_OPTIONS="-v -p $ANDROID_HOST_OUT $OTA_OPTIONS"
+      export OTA_OPTIONS="-v -p $ANDROID_HOST_OUT $OTA_COMMON_OPTIONS"
+      export OTA_INC_OPTIONS="$OTA_OPTIONS $OTA_INC_OPTIONS"
+      export OTA_FULL_OPTIONS="$OTA_OPTIONS $OTA_FULL_OPTIONS"
+      export OTA_INC_FAILED="false"
+      export OTA_EXIT_CODE=0
 
       if [ -f ${DEVICE_TARGET_FILES_DIR}/last.zip ] && [ "${OTA_TYPE}" == "incremental" ]
       then
         export LAST_DATE=$(date -r $DEVICE_TARGET_FILES_DIR/last.prop +%Y%m%d%H%M%S)
         export FILE_NAME=${OUTPUT_FILE_NAME}-${LAST_DATE}-TO-${LATEST_DATE}
         ./build/tools/releasetools/ota_from_target_files \
-          $OTA_OPTIONS \
+          $OTA_INC_OPTIONS \
           --incremental_from $DEVICE_TARGET_FILES_DIR/last.zip \
-          $DEVICE_TARGET_FILES_DIR/latest.zip $ARCHIVE_DIR/$FILE_NAME.zip || exit 1
-        if [ -s $ARCHIVE_DIR/$FILE_NAME.zip ]
+          $DEVICE_TARGET_FILES_DIR/latest.zip $ARCHIVE_DIR/$FILE_NAME.zip || export OTA_INC_FAILED="true" && export OTA_EXIT_CODE=2
+        if [ -s $ARCHIVE_DIR/$FILE_NAME.zip ] || [ "${OTA_INC_FAILED}" == "true" ]
         then
           export FILE_NAME=${OUTPUT_FILE_NAME}-${LATEST_DATE}
           ./build/tools/releasetools/ota_from_target_files \
-            $OTA_OPTIONS \
-            $DEVICE_TARGET_FILES_DIR/latest.zip $ARCHIVE_DIR/$FILE_NAME.zip || exit 1
+            $OTA_FULL_OPTIONS \
+            $DEVICE_TARGET_FILES_DIR/latest.zip $ARCHIVE_DIR/$FILE_NAME.zip || export OTA_EXIT_CODE=1
         else
           rm -f $ARCHIVE_DIR/$FILE_NAME.*
         fi
       else
         export FILE_NAME=${OUTPUT_FILE_NAME}-${LATEST_DATE}
         ./build/tools/releasetools/ota_from_target_files \
-          $OTA_OPTIONS \
-          $DEVICE_TARGET_FILES_DIR/latest.zip $ARCHIVE_DIR/$FILE_NAME.zip || exit 1
+          $OTA_FULL_OPTIONS \
+          $DEVICE_TARGET_FILES_DIR/latest.zip $ARCHIVE_DIR/$FILE_NAME.zip || export OTA_EXIT_CODE=1
       fi
       for f in $(ls $ARCHIVE_DIR/*.zip*)
       do
@@ -147,6 +151,7 @@ int createOtaPackage(String otaType) {
       # Clean up PRODUCT directory keeping the common stuff
       mkdir -p $OUT
       rm -rf $(cd $OUT/../;pwd)
+      exit $OTA_EXIT_CODE
       ''')
     }
   }
@@ -180,13 +185,17 @@ node('builder') {
             if (env.BRANCH == 'aosp-4.4') {
                 sh script: '''#!/usr/bin/env bash
                 update-java-alternatives -s java-1.7.0-openjdk-amd64 2>/dev/null'''
-                env.OTA_OPTIONS = ''
-                echo 'BRANCH=aosp-4.4->[JDK=openjdk-7,OTA_OPTIONS="'+env.OTA_OPTIONS+'"]'
+                env.OTA_COMMON_OPTIONS = ''
+                env.OTA_INC_OPTIONS = ''
+                env.OTA_FULL_OPTIONS = ''
+                echo 'BRANCH=aosp-4.4->[JDK=openjdk-7,OTA_COMMON_OPTIONS="'+env.OTA_COMMON_OPTIONS+'",OTA_INC_OPTIONS="'+env.OTA_INC_OPTIONS+'",OTA_FULL_OPTIONS="'+env.OTA_FULL_OPTIONS+'"]'
             } else {
                 sh script: '''#!/usr/bin/env bash
                 update-java-alternatives -s java-1.8.0-openjdk-amd64 2>/dev/null'''
-                env.OTA_OPTIONS = '--block -t ' + env.JOBS
-                echo 'BRANCH='+env.BRANCH+'->[JDK=openjdk-8,OTA_OPTIONS="'+env.OTA_OPTIONS+'"]'
+                env.OTA_COMMON_OPTIONS = '-t ' + env.JOBS
+                env.OTA_INC_OPTIONS = ''
+                env.OTA_FULL_OPTIONS = '--block'
+                echo 'BRANCH='+env.BRANCH+'->[JDK=openjdk-8,OTA_COMMON_OPTIONS="'+env.OTA_COMMON_OPTIONS+'",OTA_INC_OPTIONS="'+env.OTA_INC_OPTIONS+'",OTA_FULL_OPTIONS="'+env.OTA_FULL_OPTIONS+'"]'
             }
 
             echo 'Creating build directory structure...'
@@ -212,8 +221,16 @@ node('builder') {
         }
         stage('OTA Package') {
             ret = createOtaPackage(((env.PUBLISH_BUILD == 'true') ? 'incremental' : 'full'))
-            if ( ret != 0 )
-                error('Failed to create OTA Package!')
+            switch(ret) {
+            case 1:
+              error('Failed to create full OTA Package!')
+              break
+            case 2:
+              echo 'Failed to create incremental, falledback to full OTA Package!'
+              break
+            default:
+              break
+            }
         }
         stage('Archiving') {
             dir(env.ARCHIVE_DIR) {
