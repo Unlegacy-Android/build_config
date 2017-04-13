@@ -220,17 +220,9 @@ node('builder') {
                 error('Build failed!')
         }
         stage('OTA Package') {
-            ret = createOtaPackage(((env.PUBLISH_BUILD == 'true') ? 'incremental' : 'full'))
-            switch(ret) {
-            case 1:
+            ret = createOtaPackage('full')
+            if ( ret != 0 )
               error('Failed to create full OTA Package!')
-              break
-            case 2:
-              echo 'Failed to create incremental, falledback to full OTA Package!'
-              break
-            default:
-              break
-            }
         }
         stage('Archiving') {
             dir(env.ARCHIVE_DIR) {
