@@ -247,7 +247,7 @@ node('builder') {
             dir(env.ARCHIVE_DIR) {
               if (env.PUBLISH_BUILD == 'true') {
                   echo 'Publishing...'
-                  sh returnStdout: false, script: 'scp -r ./** builds@mirror:./$BRANCH/$DEVICE/.'
+                  sh returnStdout: false, script: 'rsync -a -e ssh --include "*.zip*" --exclude="*.img" . builds@mirror:./$BRANCH/$DEVICE/'
               } else
                   echo 'Will not publish anything because PUBLISH_BUILD=false'
             }
