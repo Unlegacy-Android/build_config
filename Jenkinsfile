@@ -96,9 +96,21 @@ int createOtaPackage(String otaType) {
   dir(env.SOURCE_DIR) {
     ansiColor('xterm') {
       return sh (returnStatus: true, script: '''#!/usr/bin/env bash
+      export OTA_EXIT_CODE=0
       # Load build environment
       . build/envsetup.sh
       lunch $LUNCH
+
+      cp -f $OUT/boot.img ${ARCHIVE_DIR}/. || export OTA_EXIT_CODE=3
+      cp -f $OUT/recovery.img ${ARCHIVE_DIR}/.  || export OTA_EXIT_CODE=4
+
+      if [ "${BOOT_AND_RECOVERY_IMAGES_ONLY}" == "true" ]
+      then
+        # Clean up PRODUCT directory keeping the common stuff
+        mkdir -p $OUT
+        rm -rf $(cd $OUT/../;pwd)
+        exit $OTA_EXIT_CODE
+      fi
 
       export DEVICE_TARGET_FILES_PATH=$DEVICE_TARGET_FILES_DIR/$(date -u +%Y%m%d%H%M%S).zip
       mkdir -p $DEVICE_TARGET_FILES_DIR
@@ -118,7 +130,6 @@ int createOtaPackage(String otaType) {
       export OTA_INC_OPTIONS="$OTA_OPTIONS $OTA_INC_OPTIONS"
       export OTA_FULL_OPTIONS="$OTA_OPTIONS $OTA_FULL_OPTIONS"
       export OTA_INC_FAILED="false"
-      export OTA_EXIT_CODE=0
 
       if [ -f ${DEVICE_TARGET_FILES_DIR}/last.zip ] && [ "${OTA_TYPE}" == "incremental" ]
       then
@@ -215,7 +226,10 @@ node('builder') {
             repoPickGerritChanges()
         }
         stage('Build process') {
-            ret = build('target-files-package')
+            buildTargets = 'target-files-package'
+            if ( env.BOOT_AND_RECOVERY_IMAGES_ONLY == 'true' )
+                buildTargets = 'bootimage recoveryimage'
+            ret = build(buildTargets)
             if ( ret != 0 )
                 error('Build failed!')
         }
