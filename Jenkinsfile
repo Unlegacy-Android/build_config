@@ -131,6 +131,14 @@ int createOtaPackage(String otaType) {
       export OTA_FULL_OPTIONS="$OTA_OPTIONS $OTA_FULL_OPTIONS"
       export OTA_INC_FAILED="false"
 
+      if [ "${MARK_AS_EXPERIMENTAL}" == "true" ] || [ ! -z "$GERRIT_CHANGES" ]
+      then
+        if [ ! -z "$EXPERIMENTAL_TAG" ]
+          export OUTPUT_FILE_NAME=${OUTPUT_FILE_NAME}-${EXPERIMENTAL_TAG}
+        else
+          export OUTPUT_FILE_NAME=${OUTPUT_FILE_NAME}-EXPERIMENTAL
+      fi
+
       if [ -f ${DEVICE_TARGET_FILES_DIR}/last.zip ] && [ "${OTA_TYPE}" == "incremental" ]
       then
         export LAST_DATE=$(date -r $DEVICE_TARGET_FILES_DIR/last.prop +%Y%m%d%H%M%S)
