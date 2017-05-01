@@ -178,6 +178,28 @@ int createOtaPackage(String otaType) {
   }
 }
 
+int publishToPortal(String path) {
+  echo 'Publishing OTA Package to builds portal...'
+  env.OTA_URL_PATH = path
+  dir(env.SOURCE_DIR) {
+    ansiColor('xterm') {
+      return sh (returnStatus: true, script: '''#!/usr/bin/env bash
+      export PLATFORM_VERSION=`grep ro.build.version.release ${ARCHIVE_DIR}/build.prop | cut -d '=' -f2`
+      export FILENAME=$(basename $(ls ${ARCHIVE_DIR}/${BUILD_PRODUCT}_${DEVICE}-${PLATFORM_VERSION}*.zip))
+      export MD5SUM=$(cat ${ARCHIVE_DIR}/${BUILD_PRODUCT}_${DEVICE}-${PLATFORM_VERSION}*.zip.md5sum)
+      export OTA_URL="${OTA_URL_PATH}/${FILENAME}"
+      export TYPE=release
+      if [ "${MARK_AS_EXPERIMENTAL}" == "true" ] || [ ! -z "$GERRIT_CHANGES" ]
+      then
+        export TYPE=test
+      fi
+      export POST_DATA="{ \\"device\\": \\"${DEVICE}\\", \\"filename\\": \\"${FILENAME}\\", \\"md5sum\\": \\"${MD5SUM}\\", \\"romtype\\": \\"${TYPE}\\", \\"url\\": \\"${OTA_URL}\\", \\"version\\": \\"${PLATFORM_VERSION}\\" }"
+      curl -X POST $BUILDS_PORTAL_URL -H "apiKey:$API_KEY" -H "Content-Type:application/json" --data-binary "\"$POST_DATA\""
+      ''')
+    }
+  }
+}
+
 node('builder') {
     try {
         currentBuild.description = env.BUILD_PRODUCT+'_'+env.DEVICE+'-'+env.BRANCH
@@ -258,6 +280,7 @@ node('builder') {
               if (env.PUBLISH_BUILD == 'true') {
                   echo 'Publishing...'
                   sh returnStdout: false, script: 'rsync -a -e ssh --include "*.zip*" --exclude="*.img" . builds@mirror:./$BRANCH/$DEVICE/'
+                  publishToPortal("https://builds.unlegacy-android.org/"+env.BRANCH+"/"+env.DEVICE)
               } else
                   echo 'Will not publish anything because PUBLISH_BUILD=false'
             }
