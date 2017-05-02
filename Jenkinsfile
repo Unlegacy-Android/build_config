@@ -195,7 +195,8 @@ int publishToPortal(String path) {
       fi
       export POST_DATA="{ \\"device\\": \\"${DEVICE}\\", \\"filename\\": \\"${FILENAME}\\", \\"md5sum\\": \\"${MD5SUM}\\", \\"romtype\\": \\"${TYPE}\\", \\"url\\": \\"${OTA_URL}\\", \\"version\\": \\"${PLATFORM_VERSION}\\" }"
       echo "${POST_DATA}" > /tmp/postdata
-      curl -X POST $BUILDS_PORTAL_URL -H "apiKey:$API_KEY" -H "Content-Type:application/json" --data-binary "@/tmp/postdata" 2>/dev/null
+      curl -X POST ${BUILDS_PORTAL_URL}/api/v1/add_build -H "apiKey:$API_KEY" -H "Content-Type:application/json" --data-binary "@/tmp/postdata" 2>/dev/null
+      curl -X POST ${BUILDS_PORTAL_URL}/api/v1/purgecache -H "apiKey:$API_KEY" 2>/dev/null
       rm -f /tmp/postdata
       ''')
     }
