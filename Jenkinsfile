@@ -122,6 +122,7 @@ int createOtaPackage(String otaType) {
       mv ${DEVICE_TARGET_FILES_DIR}/latest.prop ${DEVICE_TARGET_FILES_DIR}/last.prop 2>/dev/null
       ln -sf $DEVICE_TARGET_FILES_PATH ${DEVICE_TARGET_FILES_DIR}/latest.zip
       cp -f $OUT/system/build.prop ${DEVICE_TARGET_FILES_DIR}/latest.prop
+      cp -f $OUT/system/build.prop ${ARCHIVE_DIR}/build.prop
 
       export PLATFORM_VERSION=`grep ro.build.version.release $DEVICE_TARGET_FILES_DIR/latest.prop | cut -d '=' -f2`
       export OUTPUT_FILE_NAME=${BUILD_PRODUCT}_${DEVICE}-${PLATFORM_VERSION}
