@@ -283,7 +283,7 @@ node('builder') {
             dir(env.ARCHIVE_DIR) {
               if (env.PUBLISH_BUILD == 'true') {
                   echo 'Publishing...'
-                  sh returnStdout: false, script: 'rsync -a -e ssh --include "*.zip*" --exclude="*.img" . builds@mirror:./$BRANCH/$DEVICE/'
+                  sh returnStdout: false, script: 'rsync -a -e ssh --include "*.zip*" --exclude="*.img" --exclude="*.prop" . builds@mirror:./$BRANCH/$DEVICE/'
                   publishToPortal("https://builds.unlegacy-android.org/"+env.BRANCH+"/"+env.DEVICE)
               } else
                   echo 'Will not publish anything because PUBLISH_BUILD=false'
