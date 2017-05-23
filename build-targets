@@ -27,6 +27,7 @@ tuna userdebug aosp-6.0 W 1
 ## QCOM
 mako userdebug aosp-6.0 W 1
 ## TEGRA 3
+a2109 userdebug aosp-6.0 W 1
 grouper userdebug aosp-6.0 W 1
 picasso2 userdebug aosp-6.0 W 1
 tilapia userdebug aosp-6.0 W 1
