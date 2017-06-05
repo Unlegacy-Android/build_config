@@ -34,10 +34,11 @@ tilapia userdebug aosp-6.0 W 1
 
 # aosp 7.1
 ## OMAP4
+acclaim userdebug aosp-7.1 W 2
 espresso userdebug aosp-7.1 W 2
 espresso3g userdebug aosp-7.1 W 2
-#hummingbird userdebug aosp-7.1 W 2
-#ovation userdebug aosp-7.1 W 2
+hummingbird userdebug aosp-7.1 W 2
+ovation userdebug aosp-7.1 W 2
 tuna userdebug aosp-7.1 W 2
 ## QCOM
 flo userdebug aosp-7.1 W 2
