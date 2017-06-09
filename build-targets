@@ -12,11 +12,6 @@ tuna userdebug aosp-4.4 M 01
 ## TEGRA 3
 picasso2 userdebug aosp-4.4 M 01
 
-# aosp-5.1
-## OMAP4
-espresso userdebug aosp-5.1 M 02
-#espresso3g userdebug aosp-5.1 M 02
-
 # aosp-6.0
 ## OMAP4
 espresso userdebug aosp-6.0 W 1
