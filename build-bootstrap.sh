@@ -19,7 +19,11 @@ function process_line {
       BRANCH=${LINE_ARRAY[2]}
       FREQ=${LINE_ARRAY[3]}
       BUILD_DAY=${LINE_ARRAY[4]}
-      if [ "$FREQ" == "" ] || [ "$FREQ" == "D" ] ; then
+      if [ $FORCE_BUILD == "true" ] ; then
+        if [ "$SPECIFIED_BRANCH" == "$BRANCH" ] ; then
+          curl $JENKINS_ANDROID_JOB\&BRANCH=$BRANCH\&DEVICE=$DEVICE\&BUILD_TYPE=$BUILD_TYPE
+        fi
+      elif [ "$FREQ" == "" ] || [ "$FREQ" == "D" ] ; then
         curl $JENKINS_ANDROID_JOB\&BRANCH=$BRANCH\&DEVICE=$DEVICE\&BUILD_TYPE=$BUILD_TYPE
       elif [ "$FREQ" == "W" ] && [ "$WEEK_DAY" == "$BUILD_DAY" ] ; then
         curl $JENKINS_ANDROID_JOB\&BRANCH=$BRANCH\&DEVICE=$DEVICE\&BUILD_TYPE=$BUILD_TYPE
