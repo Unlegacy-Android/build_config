@@ -1,16 +1,17 @@
 # Unlegacy Android build target list
-# <device> <build_type> <branch> [[period: "D"aily, "W"eekly or "M"onthly] [build_day]]
+# <device> <build_type> <branch> [[period: "D"aily, "W"eekly, "M"onthly, "N"one] [build_day]]
 # Absence of a period indicates Daily (the default)
 # If W or M build_day must be specified, for W from 1 to 7 and for M from 01 to XX
 # where XX is the last day of the month
+# If we want just specify a device to be built manually without a specific day, "N" for none.
 
 # aosp-4.4
 ## OMAP4
-espresso userdebug aosp-4.4 M 01
-espresso3g userdebug aosp-4.4 M 01
-tuna userdebug aosp-4.4 M 01
+espresso userdebug aosp-4.4 N
+espresso3g userdebug aosp-4.4 N
+tuna userdebug aosp-4.4 N
 ## TEGRA 3
-picasso2 userdebug aosp-4.4 M 01
+picasso2 userdebug aosp-4.4 N
 
 # aosp-6.0
 ## OMAP4
