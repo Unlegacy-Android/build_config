@@ -15,8 +15,9 @@ int cleanUp() {
       . build/envsetup.sh
       lunch $LUNCH
       # Clean up PRODUCT directory keeping the common stuff
-      mkdir -p $OUT
-      rm -rf $(cd $OUT/../;pwd)
+      # mkdir -p $OUT
+      # rm -rf $(cd $OUT/../;pwd)
+      # make clean
       ''')
     }
   }
