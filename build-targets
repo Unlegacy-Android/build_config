@@ -15,36 +15,55 @@ picasso2 userdebug aosp-4.4 N
 
 # aosp-6.0
 ## OMAP4
-espresso userdebug aosp-6.0 W 1
-espresso3g userdebug aosp-6.0 W 1
-hummingbird userdebug aosp-6.0 W 1
-ovation userdebug aosp-6.0 W 1
-tuna userdebug aosp-6.0 W 1
+espresso userdebug aosp-6.0 N
+espresso3g userdebug aosp-6.0 N
+hummingbird userdebug aosp-6.0 N
+ovation userdebug aosp-6.0 N
+tuna userdebug aosp-6.0 N
 ## QCOM
-mako userdebug aosp-6.0 W 1
+mako userdebug aosp-6.0 N
 ## TEGRA 3
-a2109 userdebug aosp-6.0 W 1
-grouper userdebug aosp-6.0 W 1
-picasso2 userdebug aosp-6.0 W 1
-tilapia userdebug aosp-6.0 W 1
+a2109 userdebug aosp-6.0 N
+grouper userdebug aosp-6.0 N
+picasso2 userdebug aosp-6.0 N
+tilapia userdebug aosp-6.0 N
 
 # aosp 7.1
 ## OMAP4
-acclaim userdebug aosp-7.1 W 2
-espresso userdebug aosp-7.1 W 2
-espresso3g userdebug aosp-7.1 W 2
-hummingbird userdebug aosp-7.1 W 2
-ovation userdebug aosp-7.1 W 2
-tuna userdebug aosp-7.1 W 2
+acclaim userdebug aosp-7.1 W 1
+espresso userdebug aosp-7.1 W 1
+espresso3g userdebug aosp-7.1 W 1
+hummingbird userdebug aosp-7.1 W 1
+ovation userdebug aosp-7.1 W 1
+tuna userdebug aosp-7.1 W 1
 ## QCOM
-flo userdebug aosp-7.1 W 2
-hammerhead userdebug aosp-7.1 W 2
-mako userdebug aosp-7.1 W 2
+flo userdebug aosp-7.1 W 1
+hammerhead userdebug aosp-7.1 W 1
+mako userdebug aosp-7.1 W 1
 ## TEGRA
-a2109 userdebug aosp-7.1 W 2
-grouper userdebug aosp-7.1 W 2
-tilapia userdebug aosp-7.1 W 2
-flounder userdebug aosp-7.1 W 2
-flounder_lte userdebug aosp-7.1 W 2
+a2109 userdebug aosp-7.1 W 1
+grouper userdebug aosp-7.1 W 1
+tilapia userdebug aosp-7.1 W 1
+flounder userdebug aosp-7.1 W 1
+flounder_lte userdebug aosp-7.1 W 1
+
+# aosp 8.0
+## OMAP4
+#acclaim userdebug aosp-8.0 W 2
+#espresso userdebug aosp-8.0 W 2
+#espresso3g userdebug aosp-8.0 W 2
+#hummingbird userdebug aosp-8.0 W 2
+#ovation userdebug aosp-8.0 W 2
+#tuna userdebug aosp-8.0 W 2
+## QCOM
+#flo userdebug aosp-8.0 W 2
+#hammerhead userdebug aosp-8.0 W 2
+#mako userdebug aosp-8.0 W 2
+## TEGRA
+#a2109 userdebug aosp-8.0 W 2
+#grouper userdebug aosp-8.0 W 2
+#tilapia userdebug aosp-8.0 W 2
+#flounder userdebug aosp-8.0 W 2
+#flounder_lte userdebug aosp-8.0 W 2
 
 # DO NOT REMOVE
