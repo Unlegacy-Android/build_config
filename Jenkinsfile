@@ -129,8 +129,8 @@ int createOtaPackage(String otaType) {
       export OUTPUT_FILE_NAME=${BUILD_PRODUCT}_${DEVICE}-${PLATFORM_VERSION}
       export LATEST_DATE=$(date -r $DEVICE_TARGET_FILES_DIR/latest.prop +%Y%m%d%H%M%S)
       export OTA_OPTIONS="-v -p $ANDROID_HOST_OUT $OTA_COMMON_OPTIONS"
-      export OTA_INC_OPTIONS="$OTA_OPTIONS $OTA_INC_OPTIONS"
-      export OTA_FULL_OPTIONS="$OTA_OPTIONS $OTA_FULL_OPTIONS"
+      export OTA_INC_OPTIONS="$OTA_OPTIONS $OTA_INC_EXTRA_OPTIONS"
+      export OTA_FULL_OPTIONS="$OTA_OPTIONS $OTA_FULL_EXTRA_OPTIONS"
       export OTA_INC_FAILED="false"
 
       if [ "${MARK_AS_EXPERIMENTAL}" == "true" ] || [ ! -z "$GERRIT_CHANGES" ]
@@ -234,15 +234,15 @@ node('builder') {
                 sh script: '''#!/usr/bin/env bash
                 update-java-alternatives -s java-1.7.0-openjdk-amd64 2>/dev/null'''
                 env.OTA_COMMON_OPTIONS = ''
-                env.OTA_INC_OPTIONS = ''
-                env.OTA_FULL_OPTIONS = ''
+                env.OTA_INC_EXTRA_OPTIONS = ''
+                env.OTA_FULL_EXTRA_OPTIONS = ''
                 echo 'BRANCH=aosp-4.4->[JDK=openjdk-7,OTA_COMMON_OPTIONS="'+env.OTA_COMMON_OPTIONS+'",OTA_INC_OPTIONS="'+env.OTA_INC_OPTIONS+'",OTA_FULL_OPTIONS="'+env.OTA_FULL_OPTIONS+'"]'
             } else {
                 sh script: '''#!/usr/bin/env bash
                 update-java-alternatives -s java-1.8.0-openjdk-amd64 2>/dev/null'''
                 env.OTA_COMMON_OPTIONS = '-t ' + env.JOBS
-                env.OTA_INC_OPTIONS = ''
-                env.OTA_FULL_OPTIONS = '--block'
+                env.OTA_INC_EXTRA_OPTIONS = ''
+                env.OTA_FULL_EXTRA_OPTIONS = '--block'
                 echo 'BRANCH='+env.BRANCH+'->[JDK=openjdk-8,OTA_COMMON_OPTIONS="'+env.OTA_COMMON_OPTIONS+'",OTA_INC_OPTIONS="'+env.OTA_INC_OPTIONS+'",OTA_FULL_OPTIONS="'+env.OTA_FULL_OPTIONS+'"]'
             }
 
