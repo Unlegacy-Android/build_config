@@ -116,16 +116,26 @@ int createOtaPackage(String otaType) {
       export DEVICE_TARGET_FILES_PATH=$DEVICE_TARGET_FILES_DIR/$(date -u +%Y%m%d%H%M%S).zip
       mkdir -p $DEVICE_TARGET_FILES_DIR
       cp ${OUT}/obj/PACKAGING/target_files_intermediates/*target_files*.zip $DEVICE_TARGET_FILES_PATH
-      rm -f $(readlink ${DEVICE_TARGET_FILES_DIR}/last.zip) 2>/dev/null
-      rm -f ${DEVICE_TARGET_FILES_DIR}/last.zip 2>/dev/null
-      rm -f ${DEVICE_TARGET_FILES_DIR}/last.prop 2>/dev/null
-      mv ${DEVICE_TARGET_FILES_DIR}/latest.zip ${DEVICE_TARGET_FILES_DIR}/last.zip 2>/dev/null
-      mv ${DEVICE_TARGET_FILES_DIR}/latest.prop ${DEVICE_TARGET_FILES_DIR}/last.prop 2>/dev/null
-      ln -sf $DEVICE_TARGET_FILES_PATH ${DEVICE_TARGET_FILES_DIR}/latest.zip
-      cp -f $OUT/system/build.prop ${DEVICE_TARGET_FILES_DIR}/latest.prop
-      cp -f $OUT/system/build.prop ${ARCHIVE_DIR}/build.prop
 
-      export PLATFORM_VERSION=`grep ro.build.version.release $DEVICE_TARGET_FILES_DIR/latest.prop | cut -d '=' -f2`
+      if [ "${MARK_AS_EXPERIMENTAL}" == "true" ] || [ ! -z "$GERRIT_CHANGES" ]
+      then
+        LATEST_PROP="experimental.prop"
+        LATEST_ZIP="experimental.zip"
+        ln -sf $DEVICE_TARGET_FILES_PATH ${DEVICE_TARGET_FILES_DIR}/$LATEST_ZIP
+        cp -f $OUT/system/build.prop ${DEVICE_TARGET_FILES_DIR}/$LATEST_PROP
+      else
+        LATEST_PROP="latest.prop"
+        LATEST_ZIP="latest.zip"
+        rm -f $(readlink ${DEVICE_TARGET_FILES_DIR}/last.zip) 2>/dev/null
+        rm -f ${DEVICE_TARGET_FILES_DIR}/last.zip 2>/dev/null
+        rm -f ${DEVICE_TARGET_FILES_DIR}/last.prop 2>/dev/null
+        mv ${DEVICE_TARGET_FILES_DIR}/latest.zip ${DEVICE_TARGET_FILES_DIR}/last.zip 2>/dev/null
+        mv ${DEVICE_TARGET_FILES_DIR}/latest.prop ${DEVICE_TARGET_FILES_DIR}/last.prop 2>/dev/null
+        ln -sf $DEVICE_TARGET_FILES_PATH ${DEVICE_TARGET_FILES_DIR}/latest.zip
+        cp -f $OUT/system/build.prop ${DEVICE_TARGET_FILES_DIR}/latest.prop
+        cp -f $OUT/system/build.prop ${ARCHIVE_DIR}/build.prop
+      fi
+      export PLATFORM_VERSION=`grep ro.build.version.release $DEVICE_TARGET_FILES_DIR/$LATEST_PROP | cut -d '=' -f2`
       export OUTPUT_FILE_NAME=${BUILD_PRODUCT}_${DEVICE}-${PLATFORM_VERSION}
       export LATEST_DATE=$(date -r $DEVICE_TARGET_FILES_DIR/latest.prop +%Y%m%d%H%M%S)
       export OTA_OPTIONS="-v -p $ANDROID_HOST_OUT $OTA_COMMON_OPTIONS"
@@ -143,29 +153,26 @@ int createOtaPackage(String otaType) {
         fi
       fi
 
-      if [ -f ${DEVICE_TARGET_FILES_DIR}/last.zip ] && [ "${OTA_TYPE}" == "incremental" ]
+      echo 'Generating OTA...'
+      export FILE_NAME=${OUTPUT_FILE_NAME}-${LATEST_DATE}
+      ./build/tools/releasetools/ota_from_target_files \
+        $OTA_FULL_OPTIONS \
+        $DEVICE_TARGET_FILES_DIR/$LATEST_ZIP $ARCHIVE_DIR/$FILE_NAME.zip || export OTA_EXIT_CODE=1
+
+      if [ "${MARK_AS_EXPERIMENTAL}" != "true" ]
       then
-        export LAST_DATE=$(date -r $DEVICE_TARGET_FILES_DIR/last.prop +%Y%m%d%H%M%S)
-        export FILE_NAME=${OUTPUT_FILE_NAME}-${LAST_DATE}-TO-${LATEST_DATE}
-        ./build/tools/releasetools/ota_from_target_files \
-          $OTA_INC_OPTIONS \
-          --incremental_from $DEVICE_TARGET_FILES_DIR/last.zip \
-          $DEVICE_TARGET_FILES_DIR/latest.zip $ARCHIVE_DIR/$FILE_NAME.zip || export OTA_INC_FAILED="true" && export OTA_EXIT_CODE=2
-        if [ -s $ARCHIVE_DIR/$FILE_NAME.zip ] || [ "${OTA_INC_FAILED}" == "true" ]
+        echo 'Trying to generate Incremental OTA...'
+        if [ -f ${DEVICE_TARGET_FILES_DIR}/last.zip ]
         then
-          export FILE_NAME=${OUTPUT_FILE_NAME}-${LATEST_DATE}
+          export LAST_DATE=$(date -r $DEVICE_TARGET_FILES_DIR/last.prop +%Y%m%d%H%M%S)
+          export FILE_NAME=${OUTPUT_FILE_NAME}-${LAST_DATE}-TO-${LATEST_DATE}
           ./build/tools/releasetools/ota_from_target_files \
-            $OTA_FULL_OPTIONS \
-            $DEVICE_TARGET_FILES_DIR/latest.zip $ARCHIVE_DIR/$FILE_NAME.zip || export OTA_EXIT_CODE=1
-        else
-          rm -f $ARCHIVE_DIR/$FILE_NAME.*
+            $OTA_INC_OPTIONS \
+            --incremental_from $DEVICE_TARGET_FILES_DIR/last.zip \
+            $DEVICE_TARGET_FILES_DIR/latest.zip $ARCHIVE_DIR/$FILE_NAME.zip || export OTA_INC_FAILED="true" && export OTA_EXIT_CODE=2
         fi
-      else
-        export FILE_NAME=${OUTPUT_FILE_NAME}-${LATEST_DATE}
-        ./build/tools/releasetools/ota_from_target_files \
-          $OTA_FULL_OPTIONS \
-          $DEVICE_TARGET_FILES_DIR/latest.zip $ARCHIVE_DIR/$FILE_NAME.zip || export OTA_EXIT_CODE=1
       fi
+
       for f in $(ls $ARCHIVE_DIR/*.zip*)
       do
         md5sum $f | cut -d ' ' -f1 > $ARCHIVE_DIR/$(basename $f).md5sum
