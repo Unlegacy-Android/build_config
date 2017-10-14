@@ -143,29 +143,25 @@ int createOtaPackage(String otaType) {
         fi
       fi
 
-      if [ -f ${DEVICE_TARGET_FILES_DIR}/last.zip ] && [ "${OTA_TYPE}" == "incremental" ]
-      then
-        export LAST_DATE=$(date -r $DEVICE_TARGET_FILES_DIR/last.prop +%Y%m%d%H%M%S)
-        export FILE_NAME=${OUTPUT_FILE_NAME}-${LAST_DATE}-TO-${LATEST_DATE}
-        ./build/tools/releasetools/ota_from_target_files \
-          $OTA_INC_OPTIONS \
-          --incremental_from $DEVICE_TARGET_FILES_DIR/last.zip \
-          $DEVICE_TARGET_FILES_DIR/latest.zip $ARCHIVE_DIR/$FILE_NAME.zip || export OTA_INC_FAILED="true" && export OTA_EXIT_CODE=2
-        if [ -s $ARCHIVE_DIR/$FILE_NAME.zip ] || [ "${OTA_INC_FAILED}" == "true" ]
+      echo 'Generating OTA...'
+      export FILE_NAME=${OUTPUT_FILE_NAME}-${LATEST_DATE}
+      ./build/tools/releasetools/ota_from_target_files \
+        $OTA_FULL_OPTIONS \
+        $DEVICE_TARGET_FILES_DIR/latest.zip $ARCHIVE_DIR/$FILE_NAME.zip || export OTA_EXIT_CODE=1
+
+      if [ "${MARK_AS_EXPERIMENTAL}" != "true" ]
+        echo 'Trying to generate Incremental OTA...'
+        if [ -f ${DEVICE_TARGET_FILES_DIR}/last.zip ]
         then
-          export FILE_NAME=${OUTPUT_FILE_NAME}-${LATEST_DATE}
+          export LAST_DATE=$(date -r $DEVICE_TARGET_FILES_DIR/last.prop +%Y%m%d%H%M%S)
+          export FILE_NAME=${OUTPUT_FILE_NAME}-${LAST_DATE}-TO-${LATEST_DATE}
           ./build/tools/releasetools/ota_from_target_files \
-            $OTA_FULL_OPTIONS \
-            $DEVICE_TARGET_FILES_DIR/latest.zip $ARCHIVE_DIR/$FILE_NAME.zip || export OTA_EXIT_CODE=1
-        else
-          rm -f $ARCHIVE_DIR/$FILE_NAME.*
+            $OTA_INC_OPTIONS \
+            --incremental_from $DEVICE_TARGET_FILES_DIR/last.zip \
+            $DEVICE_TARGET_FILES_DIR/latest.zip $ARCHIVE_DIR/$FILE_NAME.zip || export OTA_INC_FAILED="true" && export OTA_EXIT_CODE=2
         fi
-      else
-        export FILE_NAME=${OUTPUT_FILE_NAME}-${LATEST_DATE}
-        ./build/tools/releasetools/ota_from_target_files \
-          $OTA_FULL_OPTIONS \
-          $DEVICE_TARGET_FILES_DIR/latest.zip $ARCHIVE_DIR/$FILE_NAME.zip || export OTA_EXIT_CODE=1
       fi
+
       for f in $(ls $ARCHIVE_DIR/*.zip*)
       do
         md5sum $f | cut -d ' ' -f1 > $ARCHIVE_DIR/$(basename $f).md5sum
