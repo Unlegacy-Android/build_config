@@ -21,7 +21,7 @@ hummingbird userdebug aosp-6.0 N
 ovation userdebug aosp-6.0 N
 tuna userdebug aosp-6.0 N
 ## QCOM
-mako userdebug aosp-6.0 N
+mako user aosp-6.0 N
 ## TEGRA 3
 a2109 userdebug aosp-6.0 N
 grouper userdebug aosp-6.0 N
@@ -37,9 +37,9 @@ hummingbird userdebug aosp-7.1 W 4
 ovation userdebug aosp-7.1 W 4
 tuna userdebug aosp-7.1 W 4
 ## QCOM
-flo userdebug aosp-7.1 W 4
+flo user aosp-7.1 W 4
 hammerhead userdebug aosp-7.1 W 4
-mako userdebug aosp-7.1 W 4
+mako user aosp-7.1 W 4
 ## TEGRA
 a2109 userdebug aosp-7.1 W 4
 grouper userdebug aosp-7.1 W 4
