@@ -7,16 +7,16 @@
 
 # aosp-4.4
 ## OMAP4
-espresso userdebug aosp-4.4 N
-espresso3g userdebug aosp-4.4 N
+espresso user aosp-4.4 N
+espresso3g user aosp-4.4 N
 tuna userdebug aosp-4.4 N
 ## TEGRA 3
 picasso2 userdebug aosp-4.4 N
 
 # aosp-6.0
 ## OMAP4
-espresso userdebug aosp-6.0 N
-espresso3g userdebug aosp-6.0 N
+espresso user aosp-6.0 N
+espresso3g user aosp-6.0 N
 hummingbird userdebug aosp-6.0 N
 ovation userdebug aosp-6.0 N
 tuna userdebug aosp-6.0 N
