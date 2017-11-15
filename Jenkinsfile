@@ -113,7 +113,7 @@ int createOtaPackage(String otaType) {
         exit $OTA_EXIT_CODE
       fi
 
-      export DEVICE_TARGET_FILES_PATH=$DEVICE_TARGET_FILES_DIR/$(date -u +%Y%m%d%H%M%S).zip
+      export DEVICE_TARGET_FILES_PATH=$DEVICE_TARGET_FILES_DIR/$(date -u +%Y%m%d-%H%M).zip
       mkdir -p $DEVICE_TARGET_FILES_DIR
       cp ${OUT}/obj/PACKAGING/target_files_intermediates/*target_files*.zip $DEVICE_TARGET_FILES_PATH
       rm -f $(readlink ${DEVICE_TARGET_FILES_DIR}/last.zip) 2>/dev/null
@@ -127,7 +127,7 @@ int createOtaPackage(String otaType) {
 
       export PLATFORM_VERSION=`grep ro.build.version.release $DEVICE_TARGET_FILES_DIR/latest.prop | cut -d '=' -f2`
       export OUTPUT_FILE_NAME=${BUILD_PRODUCT}_${DEVICE}-${PLATFORM_VERSION}
-      export LATEST_DATE=$(date -r $DEVICE_TARGET_FILES_DIR/latest.prop +%Y%m%d%H%M%S)
+      export LATEST_DATE=$(date -r $DEVICE_TARGET_FILES_DIR/latest.prop +%Y%m%d-%H%M)
       export OTA_OPTIONS="-v -p $ANDROID_HOST_OUT $OTA_COMMON_OPTIONS"
       export OTA_INC_OPTIONS="$OTA_OPTIONS $OTA_INC_EXTRA_OPTIONS"
       export OTA_FULL_OPTIONS="$OTA_OPTIONS $OTA_FULL_EXTRA_OPTIONS"
@@ -145,7 +145,7 @@ int createOtaPackage(String otaType) {
 
       if [ -f ${DEVICE_TARGET_FILES_DIR}/last.zip ] && [ "${OTA_TYPE}" == "incremental" ]
       then
-        export LAST_DATE=$(date -r $DEVICE_TARGET_FILES_DIR/last.prop +%Y%m%d%H%M%S)
+        export LAST_DATE=$(date -r $DEVICE_TARGET_FILES_DIR/last.prop +%Y%m%d-%H%M)
         export FILE_NAME=${OUTPUT_FILE_NAME}-${LAST_DATE}-TO-${LATEST_DATE}
         ./build/tools/releasetools/ota_from_target_files \
           $OTA_INC_OPTIONS \
