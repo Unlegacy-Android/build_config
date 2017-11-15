@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "28841f9e_c3b020f0",
+        "filename": "Jenkinsfile",
+        "patchSetId": 4
+      },
+      "lineNbr": 140,
+      "author": {
+        "id": 1000038
+      },
+      "writtenOn": "2017-11-15T20:16:19Z",
+      "side": 1,
+      "message": "$LATEST_PROP",
+      "range": {
+        "startLine": 140,
+        "startChar": 0,
+        "endLine": 140,
+        "endChar": 86
+      },
+      "revId": "effb2efe300be482cbb336f0a78e4bd3609be9b9",
+      "serverId": "d5e41ece-075f-43fb-b5a6-48951f3d7b1d",
+      "unresolved": false
+    }
+  ]
+}
