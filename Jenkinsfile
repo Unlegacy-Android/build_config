@@ -217,7 +217,7 @@ node('builder') {
             env.INCOMING_DIR = ((env.PUBLISH_BUILD == 'true') ? '/incoming/' : env.INCOMING_TMP_DIR ) + env.BRANCH
             env.DEVICE_TARGET_FILES_DIR = env.INCOMING_DIR + '/' + env.DEVICE
             env.LUNCH = env.BUILD_PRODUCT + '_' + env.DEVICE + '-' + env.BUILD_TYPE
-            env.CCACHE_DIR = env.WORKSPACE + '/.ccache'
+            env.CCACHE_DIR = env.WORKSPACE + '/.ccache/' + env.BRANCH
             env.USE_CCACHE = 1
             env.CCACHE_NLEVELS = 4
             env.PYTHONDONTWRITEBYTECODE = 1
