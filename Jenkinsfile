@@ -60,10 +60,10 @@ int build(String buildTargets) {
       lunch $LUNCH
 
       # Setup ccache size
-      if [ ! "$(ccache -s|grep -E 'max cache size'|awk '{print $4}')" = "100.0" ]
-      then
-        ccache -M 100G
-      fi
+      #if [ ! "$(ccache -s|grep -E 'max cache size'|awk '{print $4}')" = "100.0" ]
+      #then
+      #  ccache -M 100G
+      #fi
 
       # Check if we need to cleanup the OUT directory
       LAST_CLEAN=0
