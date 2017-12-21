@@ -24,9 +24,9 @@ tuna user aosp-6.0 N
 mako user aosp-6.0 N
 ## TEGRA 3
 a2109 userdebug aosp-6.0 N
-grouper userdebug aosp-6.0 N
+grouper user aosp-6.0 N
 picasso2 userdebug aosp-6.0 N
-tilapia userdebug aosp-6.0 N
+tilapia user aosp-6.0 N
 
 # aosp 7.1
 ## OMAP4
@@ -42,10 +42,10 @@ hammerhead userdebug aosp-7.1 W 4
 mako user aosp-7.1 W 4
 ## TEGRA
 a2109 userdebug aosp-7.1 W 4
-grouper userdebug aosp-7.1 W 4
-tilapia userdebug aosp-7.1 W 4
-flounder userdebug aosp-7.1 W 4
-flounder_lte userdebug aosp-7.1 W 4
+grouper user aosp-7.1 W 4
+tilapia user aosp-7.1 W 4
+flounder user aosp-7.1 W 4
+flounder_lte user aosp-7.1 W 4
 
 # aosp 8.0
 ## OMAP4
