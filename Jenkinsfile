@@ -85,7 +85,9 @@ int build(String buildTargets) {
         rm -rf $(cd $OUT/../;pwd)
       fi
 
-      time make -j$JOBS $BUILD_TARGETS
+      OTATOOLS_TARGET=otatools
+
+      time make -j$JOBS $BUILD_TARGETS $OTATOOLS_TARGET
       ''')
     }
   }
