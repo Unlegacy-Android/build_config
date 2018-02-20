@@ -60,6 +60,10 @@ int build(String buildTargets) {
 
       # Try to lunch
       lunch $LUNCH
+      if [ "0" -ne "$?" ]
+      then
+        echo "Lunch failed."
+      fi
 
       # Setup ccache size
       #if [ ! "$(ccache -s|grep -E 'max cache size'|awk '{print $4}')" = "100.0" ]
