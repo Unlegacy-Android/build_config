@@ -28,21 +28,26 @@ int cleanUp() {
 void repoPickGerritChanges() {
   echo 'Applying gerrit changes...'
   dir(env.SOURCE_DIR) {
-    try {
-      sh '''#!/usr/bin/env bash
+    return sh (returnStatus: true, script: '''#!/usr/bin/env bash
+      function check_gerrit_picks_result {
+        if [ "0" -ne "$?" ]
+        then
+          echo "Gerrit picks failed."
+          exit 1
+        fi
+      }
       if [ ! -z "$GERRIT_CHANGES" ]
       then
         IS_HTTP=$(echo $GERRIT_CHANGES | grep http)
         if [ -z "$IS_HTTP" ]
         then
           python ./vendor/unlegacy/build/tools/repopick.py $GERRIT_CHANGES
+          check_gerrit_picks_result
         else
           python ./vendor/unlegacy/build/tools/repopick.py $(curl $GERRIT_CHANGES)
+          check_gerrit_picks_result
         fi
-      fi'''
-    } catch (Exception e) {
-      echo 'Gerrit picks failed.'
-    }
+      fi''')
   }
 }
 
@@ -274,7 +279,9 @@ node('builder') {
         stage('Code syncing') {
             checkout poll: false, scm: [$class: 'RepoScm', currentBranch: true, destinationDir: '/unlegacy/'+env.BRANCH, forceSync: true, jobs: 8, manifestBranch: env.BRANCH, manifestRepositoryUrl: 'https://github.com/Unlegacy-Android/android.git', noTags: true, quiet: true]
             // TODO: Create a saveManifest()
-            repoPickGerritChanges()
+            ret = repoPickGerritChanges()
+            if ( ret != 0 )
+               error('Gerrit picks failed.')
         }
         stage('Build process') {
             buildTargets = 'target-files-package'
