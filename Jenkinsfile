@@ -60,6 +60,11 @@ int build(String buildTargets) {
 
       # Try to lunch
       lunch $LUNCH
+      if [ "0" -ne "$?" ]
+      then
+        echo "Lunch failed."
+        exit 1
+      fi
 
       # Setup ccache size
       #if [ ! "$(ccache -s|grep -E 'max cache size'|awk '{print $4}')" = "100.0" ]
@@ -90,6 +95,11 @@ int build(String buildTargets) {
       OTATOOLS_TARGET=otatools
 
       time make -j$JOBS $BUILD_TARGETS $OTATOOLS_TARGET
+      if [ "0" -ne "$?" ]
+      then
+        echo "Build failed."
+        exit 2
+      fi
       ''')
     }
   }
@@ -271,8 +281,11 @@ node('builder') {
             if ( env.BOOT_AND_RECOVERY_IMAGES_ONLY == 'true' )
                 buildTargets = 'bootimage recoveryimage'
             ret = build(buildTargets)
-            if ( ret != 0 )
-                error('Build failed!')
+            switch (ret) {
+              case 1: error('Lunch failed!'); break;
+              case 2: error('Build failed!'); break;
+              default: echo "Build successful."
+            }
         }
         stage('OTA Package') {
             ret = createOtaPackage('full')
