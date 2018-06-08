@@ -21,6 +21,7 @@ hummingbird userdebug aosp-6.0 N
 ovation userdebug aosp-6.0 N
 tuna user aosp-6.0 N
 ## QCOM
+hammerhead userdebug aosp-6.0 N
 mako user aosp-6.0 N
 ## TEGRA 3
 a2109 userdebug aosp-6.0 N
