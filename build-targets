@@ -38,6 +38,7 @@ hummingbird userdebug aosp-7.1 N
 ovation userdebug aosp-7.1 N
 tuna userdebug aosp-7.1 N
 ## QCOM
+deb user aosp-7.1 N
 flo user aosp-7.1 N
 hammerhead userdebug aosp-7.1 N
 mako user aosp-7.1 N
