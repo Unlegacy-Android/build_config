@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 
-JENKINS_ANDROID_JOB="$JENKINS_URL/job/android/buildWithParameters?token=$JENKINS_BUILD_TOKEN&PUBLISH_BUILD=true"
+JENKINS_ANDROID_JOB="$JENKINS_URL/job/android/buildWithParameters?token=$JENKINS_BUILD_TOKEN&PUBLISH_BUILD=${PUBLISH_BUILD:-false}"
 
 WEEK_DAY=$(date +%u)    # day of the week (1..7); 1 is Monday
 MONTH_DAY=$(date +%d)   # day of the month; (01..NN)
