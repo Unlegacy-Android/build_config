@@ -46,26 +46,24 @@ mako user aosp-7.1 N
 a2109 userdebug aosp-7.1 N
 grouper user aosp-7.1 N
 tilapia user aosp-7.1 N
+transformer user aosp-7.1 N
 flounder userdebug aosp-7.1 N
 flounder_lte userdebug aosp-7.1 N
 
-# aosp 8.0
-## OMAP4
-#acclaim userdebug aosp-8.0 W 5
-#espresso userdebug aosp-8.0 W 5
-#espresso3g userdebug aosp-8.0 W 5
-#hummingbird userdebug aosp-8.0 W 5
-#ovation userdebug aosp-8.0 W 5
-#tuna userdebug aosp-8.0 W 5
+# aosp 8.1
 ## QCOM
-#flo userdebug aosp-8.0 W 5
-#hammerhead userdebug aosp-8.0 W 5
-#mako userdebug aosp-8.0 W 5
+deb user aosp-8.1 N
+flo userdebug aosp-8.1 N
+hammerhead userdebug aosp-8.1 N
+mako userdebug aosp-8.1 N
 ## TEGRA
-#a2109 userdebug aosp-8.0 W 5
-#grouper userdebug aosp-8.0 W 5
-#tilapia userdebug aosp-8.0 W 5
-#flounder userdebug aosp-8.0 W 5
-#flounder_lte userdebug aosp-8.0 W 5
+transformer user aosp-8.1 N
+
+# aosp 9.0
+## QCOM
+deb user aosp-9.0 N
+flo userdebug aosp-9.0 N
+hammerhead userdebug aosp-9.0 N
+mako userdebug aosp-9.0 N
 
 # DO NOT REMOVE
