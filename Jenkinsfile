@@ -86,7 +86,7 @@ int build(String buildTargets) {
       TIME_SINCE_LAST_CLEAN=$(expr $(date +%s) - $LAST_CLEAN)
       # Convert this to hours
       TIME_SINCE_LAST_CLEAN=$(expr $TIME_SINCE_LAST_CLEAN / 60 / 60)
-      if [ $TIME_SINCE_LAST_CLEAN -gt "24" -o $CLEAN = "true" ]
+      if [ $TIME_SINCE_LAST_CLEAN -gt "168" -o $CLEAN = "true" ]
       then
         echo "Cleaning!"
         touch .clean
